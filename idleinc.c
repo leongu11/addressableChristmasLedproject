@@ -49,7 +49,8 @@
 #include <stdio.h>
 #include <string.h>
 
-#define LED_COUNT 50              // Number of LEDs in your strip
+
+#define LED_COUNT 150              // Number of LEDs in your strip
 #define GPIO_PIN 18               // Usually GPIO 18 (PWM0)
 #define DMA 10
 #define STRIP_TYPE WS2811_STRIP_RGB // For WS2811
@@ -83,13 +84,15 @@ ws2811_t ledstring =
     },
 };
 
-
 int main()
 {
     if (ws2811_init(&ledstring))
         return -1;
+	    
     while (flag = true) {
 	
+	//system("mpg123 rockingtree.mp3");
+
 	for (int i = 0; i < LED_COUNT; i++) {
 	    int r = rand() % 255;
 	    int g = rand() % 255;

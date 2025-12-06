@@ -39,6 +39,8 @@
 	//return 0; 
 //}
 
+//compile with gcc ledinc.c -I./rpi_ws281x -L./rpi_ws281x -lm -l ws2811 -o ledtest
+
 
 #include "ws2811.h"
 #include <unistd.h>
@@ -49,7 +51,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#define LED_COUNT 50              // Number of LEDs in your strip
+#define LED_COUNT 150              // Number of LEDs in your strip
 #define GPIO_PIN 18               // Usually GPIO 18 (PWM0)
 #define DMA 10
 #define STRIP_TYPE WS2811_STRIP_RGB // For WS2811
@@ -155,7 +157,7 @@ int comparearrayYDSC(const void *const tuple1, const void *const tuple2) {
 }
 
 
-void shift(int op, struct array_struct *pixelArray, int count, int size, int color, int mcS) 
+void shift(int op, struct array_struct *pixelArray, int count, int size, int color, int mcS,int bgcolor) 
 {
     switch (op) {
 	case 1:
@@ -173,16 +175,18 @@ void shift(int op, struct array_struct *pixelArray, int count, int size, int col
 	}
    
     for (int i = 0; i < LED_COUNT; i++) {
+	ledstring.channel[0].leds[i] = bgcolor;
+	
 	ledstring.channel[0].leds[pixelArray[i].index] = color;
 	ws2811_render(&ledstring);
 			
 	usleep(mcS);
-	ledstring.channel[0].leds[pixelArray[i].index] = 0x000000;
+	ledstring.channel[0].leds[pixelArray[i].index] = bgcolor;
 	ws2811_render(&ledstring);
 	
     }
 
-}   
+}
 
 //void section()
 
@@ -211,9 +215,11 @@ int main()
     
     if (ws2811_init(&ledstring))
         return -1;
+	    
     while (1) {
-	shift(1,pixelArray,count,size,0x00FF00,1000);
-	shift(4,pixelArray,count,size,0xFF0000,1000);
+    
+	shift(2,pixelArray,count,size,0x00FF00,1000,0x000005);
+	shift(3,pixelArray,count,size,0xFF0000,1000,0x000005);
     }
     
     //while (flag = true) {

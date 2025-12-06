@@ -6,10 +6,7 @@ import numpy as np
 import cv2
 import subprocess
 
-#use for first process through only
-
-numPix = 50
-
+numPix = 150
 
 pixels = neopixel.NeoPixel(board.D18,numPix,brightness = 1,auto_write = True)
 
@@ -23,22 +20,23 @@ def cameraRun():
 
 cameraRun()
 
-##later
-
 pixelPoints = {}
 
 def loadImages():
     for loop2 in range(1,numPix+1):
         
-        tempImg2 = cv2.imread("pixel"+str(loop2)+".jpeg",cv2.IMREAD_COLOR)
-        tempImg = cv2.imread("pixel"+str(loop2)+".jpeg",cv2.IMREAD_GRAYSCALE)
-    
+        imgPath = "/home/pi/ledproject/pixel"+str(loop2)+".jpeg"
+        
+        tempImg2 = cv2.imread(imgPath,cv2.IMREAD_COLOR)
+
+        tempImg = cv2.imread(imgPath,cv2.IMREAD_GRAYSCALE)
+        
         _, threshold = cv2.threshold(tempImg, 200, 255, cv2.THRESH_BINARY)
 
         _, contours, _ = cv2.findContours(threshold, cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
 
         #js use first and most contouring contour for the pixel
-
+        
         contl = max(contours, key=cv2.contourArea)
 
         approx = cv2.approxPolyDP(contl, 0.009*cv2.arcLength(contl, True), True)
